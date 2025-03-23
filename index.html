@@ -186,7 +186,7 @@
 					const s = stands.filter(st => st.ClienteMarca).reduce((running, st) => running + st.Superficie, 0);
 					$('#stands').html(N);
 					$('#booking').html(n + ' (' + Math.round(100*n/N) + '%)');
-					$('#sale').html('$ ' + Math.round(price*s));
+					$('#sale').html(new Intl.NumberFormat("es-AR", {style: "currency", currency: "ARS"}).format(Math.round(price*s)));
 					$('#curtain').fadeOut(500);
 				})
 			.fetch();
