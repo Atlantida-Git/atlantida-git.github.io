@@ -129,16 +129,10 @@
 				return Math.round(k*length);
 			};
 			const endpoint = 'https://prod-174.westus.logic.azure.com/workflows/10a7c13b8d0d45cd947b3df47d0f2b04/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=9K7vR10ujdxThUfWJw7VW2zd2jGpPjO5Zul5jHov03Y';
-			const price = 300000;
-			let N = 0, S = 0, n = 0, s = 0; 
 			const stands = (new dolly.Module('', endpoint))
 				//.parser(response => response.data.rows.filter(loc => loc.x !== null).map(loc => {loc.users = loc.users.join('<br>'); return loc;}))
 				.view('map', (new dolly.View('#map-view', 'desktop'))
 					.on('bind', (field, data, record) => {
-						N++;
-						S += record.Superficie;
-						n += record.ClienteMarca ? 1 : 0;
-						s += record.ClienteMarca ? record.Superficie : 0;
 						switch (field) {
 						case 'style':
 							let s;
@@ -180,7 +174,11 @@
 						}
 					})
 				)
-				.on('endFetch', () => {
+				.on('endFetch', (me) => {
+					const price = 300000;
+					const stands = me.get();
+					const N = stands.length;
+					const S = stands.reduce((running, s) => running + s.Superficie, 0);
 					$('#stands').html(N);
 					$('#curtain').fadeOut(500);
 				})
