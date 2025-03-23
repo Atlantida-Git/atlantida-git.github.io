@@ -1,9 +1,8 @@
 <!doctype html>
-<html>
-<head>
+<html><head>
 	<meta charset="UTF-8">
-	<title>Nimbus Map</title>
-	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Montserrat'>
+	<title>Puro Diseño Spaces | Real time layout</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 	<link rel="stylesheet" href="nimbus.core.css" />
 	<link rel="stylesheet" href="nimbus.layout.css" />
@@ -35,20 +34,15 @@
 			border: 1px solid #CCC;
 			padding: 0; margin: 0;
 			box-sizing: border-box;
-			/*box-shadow: 
-				2px 0 0 0 #888, 
-				0 2px 0 0 #888, 
-				2px 2px 0 0 #888,   /* Just to fix the corner * /
-				2px 0 0 0 #888 inset, 
-				0 2px 0 0 #888 inset;*/
+			overflow: visible;
 		}
-		.desktop[category=Arte] {border-color: #080;}
-		.desktop[category=Estilo] {border-color: #808;}
-		.desktop[category=Hogar-y-Textil] {border-color: #00F;}
-		.desktop[category=Infantiles] {border-color: #C40;}
-		.desktop[category=Provincias] {border-color: #46C;}
-		.desktop[category=Sabores] {border-color: #888;}
-		.desktop[category=Sponsors] {border-color: #C00;}
+		div[category=Arte] {border-color: #080 !important;}
+		div[category=Estilo] {border-color: #808 !important;}
+		div[category=Hogar-y-Textil] {border-color: #00F !important;}
+		div[category=Infantiles] {border-color: #C40 !important;}
+		div[category=Provincias] {border-color: #46C !important;}
+		div[category=Sabores] {border-color: #888 !important;}
+		div[category=Sponsors] {border-color: #C00 !important;}
 		
 		.desktop[category=Arte][reserved] {background-color: #00880050;}
 		.desktop[category=Estilo][reserved] {background-color: #88008850;}
@@ -58,6 +52,8 @@
 		.desktop[category=Sabores][reserved] {background-color: #88888850;}
 		.desktop[category=Sponsors][reserved] {background-color: #CC000050;}
 
+		.desktop .bite {position: absolute; background-color: white; border: 0px solid transparent;}
+		
 		.machine {
 			position: absolute; 
 			left: 50%; top: 50%; 
@@ -146,6 +142,7 @@
 								+ '; transform: rotate(-' + record.Rotacion + 'deg) '
 								+ '; transform-origin: 100%'
 								+ '; font-size: ' + (x => (x < 10 ? 10 : (x > 24 ? 24 : x)))(scale(Math.min(record.Alto, record.Ancho))/3) + 'px';
+							/*
 							switch (record.Forma) {
 							case 1:
 								s += '; border-top-right-radius: ' + scale(record.Parametro) + 'px'; break;
@@ -155,7 +152,7 @@
 								s += '; border-bottom-left-radius: ' + scale(record.Parametro) + 'px'; break;
 							case 4:
 								s += '; border-bottom-right-radius: ' + scale(record.Parametro) + 'px'; break;
-							}
+							}*/
 							return s;
 						case 'info':
 							return (record.ClienteMarca || '(no reservado)') + '\n' + record.Superficie + ' m²'
@@ -163,6 +160,48 @@
 							return record.Alto >= record.Ancho && scale(record.Ancho) < 60;
 						case 'category':
 							return record.Categoria.replaceAll(' ', '-');
+						case 'bitestyle':
+							let sizeX = Math.sqrt(2)*record.ParametroX;
+							let sizeY = Math.sqrt(2)*record.ParametroY;
+							let b = ' width:' + scale(sizeX) + 'px;'
+									+ ' height: ' + scale(sizeY) + 'px;';
+							switch (record.Forma) {
+							case 1:
+								b += 'left: calc(100% - ' + scale(sizeX/2) + 'px);'
+									+ ' top: -' + scale(sizeY/2) + 'px;'
+									+ ' transform: rotate(45deg);'
+									+ ' border-bottom-width: 1px;';
+								break;
+							case 2:
+								b += 'left: -' + scale(sizeX/2) + 'px;'
+									+ ' top: -' + scale(sizeY/2) + 'px;'
+									+ ' transform: rotate(-45deg);'
+									+ ' border-bottom-width: 1px;';
+								break;
+							case 3:
+								b += 'left: -' + scale(sizeX/2) + 'px;'
+									+ ' top: calc(100% - ' + scale(sizeY/2) + 'px);'
+									+ ' transform: rotate(45deg);'
+									+ ' border-top-width: 1px;';
+								break;
+							case 4:
+								b += 'left: calc(100% - ' + scale(sizeX/2) + 'px);'
+									+ ' top: calc(100% - ' + scale(sizeY/2) + 'px);'
+									+ ' transform: rotate(-45deg);'
+									+ ' border-top-width: 1px;';
+								break;
+							case 12:
+								b = 'width:' + (2 + scale(record.ParametroX)) + 'px;'
+									+ ' height: ' + (2 + scale(record.ParametroY)) + 'px;'
+									+ ' left: -2px;'
+									+ ' top: -2px;'
+									+ ' border-right-width: 1px;'
+									+ ' border-bottom-width: 1px;';
+								break;
+							default:
+								b = 'display: none';
+							}
+							return b;
 						default:
 							return data;
 						}
@@ -199,6 +238,7 @@
 		<div id="map-view">
 			<div dy-template="desktop" dy-clone="true" class="desktop" dy-bind="style:[[style]];reserved:?[[ClienteCUIT]];category:[[category]]">
 				<span class="machine" dy-bind="html:[[Codigo]];vertical:?[[vertical]];title:[[info]]"></span>
+				<div class="bite" dy-bind="style:[[bitestyle]];category:[[category]]"></div>
 			</div>
 		</div>
 	</div>
