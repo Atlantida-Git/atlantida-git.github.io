@@ -176,7 +176,7 @@
 				)
 				.on('endFetch', (me) => {
 					const price = 300000;
-					const stands = me.get();
+					const stands = me.get(); console.log(stands)
 					const N = stands.length;
 					const S = stands.reduce((running, s) => running + s.Superficie, 0);
 					$('#stands').html(N);
