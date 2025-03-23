@@ -142,7 +142,7 @@
 						case 'info':
 							return (record.ClienteMarca || '(no reservado)') + '\n' + record.Superficie + ' m²'
 						case 'vertical':
-							return record.Alto >= record.Ancho;
+							return record.Alto >= record.Ancho && scale(record.Ancho) < 60;
 						case 'category':
 							return record.Categoria.replaceAll(' ', '-');
 						default:
