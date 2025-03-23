@@ -67,7 +67,14 @@
 			z-index: 1; 
 		}
 		.machine[vertical] {writing-mode: vertical-rl; width: auto; height: 90%;}
-		
+
+		#imago {
+			position: absolute;
+			top: 20px; right: 20px;
+			padding: 20px;
+			background-color: rgba(255, 255, 255, 0.8);
+		}
+		#imago img {width: 200px;}
 		#commands {
 			position: absolute; top: 40px; left: 40px; width: 240px; height: 50px; background-color: #CCC; box-shadow: 0px 5px 20px 2px #000; border-radius: 5px;
 			padding-left: 20px;
@@ -180,6 +187,7 @@
 		<div class="button" dy-events="click:scale" scale="75"><span>75%</span></div>
 		<div class="button" dy-events="click:scale" scale="50"><span>50%</span></div>
 	</div>
+	<div id="imago"><img src="../images/pds-imagotipo.png" /></div>
 	<div id="curtain">
 		<div class="loader"><img src="pds-isotipo.png" />Cargando stands...</div>
 	</div>
