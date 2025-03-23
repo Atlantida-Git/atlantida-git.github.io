@@ -178,8 +178,10 @@
 					const price = 300000;
 					const stands = me.get(); console.log(stands)
 					const N = stands.length;
+					const n = stands.filter(s => s.ClienteMarca).length;
 					const S = stands.reduce((running, s) => running + s.Superficie, 0);
 					$('#stands').html(N);
+					$('#booking').html(n + ' (' + (100*n/N) + '%)')
 					$('#curtain').fadeOut(500);
 				})
 			.fetch();
@@ -207,6 +209,8 @@
 		<table>
 			<tr>
 				<td>Stands:</td><td id="stands"></td>
+				<td>Reservados:</td><td id="booking"></td>
+				<td>Venta:</td><td id="sale"></td>
 			</tr>
 		</table>
 	</div>
