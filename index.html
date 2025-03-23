@@ -75,6 +75,14 @@
 			background-color: rgba(255, 255, 255, 0.8);
 		}
 		#imago img {width: 200px;}
+		
+		#stats {
+			position: absolute;
+			bottom: 20px; right: 20px;
+			padding: 20px;
+			background-color: rgba(255, 255, 255, 0.8);			
+		}
+
 		#commands {
 			position: absolute; top: 40px; left: 40px; width: 240px; height: 50px; background-color: #CCC; box-shadow: 0px 5px 20px 2px #000; border-radius: 5px;
 			padding-left: 20px;
@@ -121,13 +129,19 @@
 				return Math.round(k*length);
 			};
 			const endpoint = 'https://prod-174.westus.logic.azure.com/workflows/10a7c13b8d0d45cd947b3df47d0f2b04/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=9K7vR10ujdxThUfWJw7VW2zd2jGpPjO5Zul5jHov03Y';
+			const price = 300000;
+			let N = 0, S = 0, n = 0, s = 0; 
 			const stands = (new dolly.Module('', endpoint))
 				//.parser(response => response.data.rows.filter(loc => loc.x !== null).map(loc => {loc.users = loc.users.join('<br>'); return loc;}))
 				.view('map', (new dolly.View('#map-view', 'desktop'))
 					.on('bind', (field, data, record) => {
+						N++;
+						S += record.Superficie;
+						n += record.ClienteMarca ? 1 : 0;
+						s += record.ClienteMarca ? record.Superficie : 0;
 						switch (field) {
 						case 'style':
-							var s;
+							let s;
 							s = 'left: ' + scale(645 + record.X) + 'px'
 								+ '; top: ' + scale(445 + record.Y) + 'px'
 								+ '; width:' + scale(record.Ancho) + 'px'
@@ -167,6 +181,7 @@
 					})
 				)
 				.on('endFetch', () => {
+					$('#stands').html(N);
 					$('#curtain').fadeOut(500);
 				})
 			.fetch();
@@ -187,7 +202,16 @@
 		<div class="button" dy-events="click:scale" scale="75"><span>75%</span></div>
 		<div class="button" dy-events="click:scale" scale="50"><span>50%</span></div>
 	</div>
-	<div id="imago"><img src="pds-imagotipo.png" /></div>
+	<div id="imago">
+		<img src="pds-imagotipo.png" />
+	</div>
+	<div id="stats">
+		<table>
+			<tr>
+				<td>Stands:</td><td id="stands"></td>
+			</tr>
+		</table>
+	</div>
 	<div id="curtain">
 		<div class="loader"><img src="pds-isotipo.png" />Cargando stands...</div>
 	</div>
