@@ -181,7 +181,7 @@
 					const n = stands.filter(s => s.ClienteMarca).length;
 					const S = stands.reduce((running, s) => running + s.Superficie, 0);
 					$('#stands').html(N);
-					$('#booking').html(n + ' (' + (100*n/N) + '%)')
+					$('#booking').html(n + ' (' + Math.round(100*n/N) + '%)')
 					$('#curtain').fadeOut(500);
 				})
 			.fetch();
