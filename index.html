@@ -226,7 +226,7 @@
 					$('#stands').html(N);
 					$('#booking').html(n + ' (' + Math.round(100*n/N) + '%)');
 					$('#area').html(s + ' m<sup>2</sup> (' + Math.round(100*s/S) + '%)');
-					$('#sale').html(new Intl.NumberFormat("es-AR", {style: "currency", currency: "ARS"}).format(Math.round(price*s)));
+					$('#sale').html(new Intl.NumberFormat("es-AR", {style: "currency", currency: "ARS"}).format(Math.round(1.21*price*s)));
 					$('#curtain').fadeOut(500);
 				})
 			.fetch();
