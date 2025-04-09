@@ -216,6 +216,9 @@
 						}
 					})
 				)
+				.on('beforeFetch', (me) => {
+					me.view('map').clear();
+				})
 				.on('endFetch', (me) => {
 					const price = 300000;
 					const stands = me.get(); console.log(stands)
@@ -229,6 +232,10 @@
 					$('#sale').html(new Intl.NumberFormat("es-AR", {style: "currency", currency: "ARS"}).format(Math.round(1.21*price*s)));
 					$('#curtain').fadeOut(500);
 				})
+				.on('interval', (me, count) => {
+					me.fetch({verb: 'status'});
+				})
+			.interval(10000)
 			.fetch();
 		});		
 	</script>
