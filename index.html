@@ -218,6 +218,7 @@
 				)
 				.on('beforeFetch', (me) => {
 					me.view('map').clear();
+					$('#curtain').fadeIn(500);
 				})
 				.on('endFetch', (me) => {
 					const price = 300000;
@@ -235,7 +236,7 @@
 				.on('interval', (me, count) => {
 					me.fetch({verb: 'status'});
 				})
-			.interval(10000)
+			.interval(30*60*1000)
 			.fetch();
 		});		
 	</script>
