@@ -1,8 +1,10 @@
+<%@LANGUAGE="VBSCRIPT" CODEPAGE="65001"%> 
 <!doctype html>
-<html><head>
+<html>
+<head>
 	<meta charset="UTF-8">
-	<title>Puro Diseño Spaces | Real time layout</title>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+	<title>Nimbus Map</title>
+	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Montserrat'>
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 	<link rel="stylesheet" href="nimbus.core.css" />
 	<link rel="stylesheet" href="nimbus.layout.css" />
@@ -34,15 +36,20 @@
 			border: 1px solid #CCC;
 			padding: 0; margin: 0;
 			box-sizing: border-box;
-			overflow: visible;
+			/*box-shadow: 
+				2px 0 0 0 #888, 
+				0 2px 0 0 #888, 
+				2px 2px 0 0 #888,   /* Just to fix the corner * /
+				2px 0 0 0 #888 inset, 
+				0 2px 0 0 #888 inset;*/
 		}
-		div[category=Arte] {border-color: #080 !important;}
-		div[category=Estilo] {border-color: #808 !important;}
-		div[category=Hogar-y-Textil] {border-color: #00F !important;}
-		div[category=Infantiles] {border-color: #C40 !important;}
-		div[category=Provincias] {border-color: #46C !important;}
-		div[category=Sabores] {border-color: #888 !important;}
-		div[category=Sponsors] {border-color: #C00 !important;}
+		.desktop[category=Arte] {border-color: #080;}
+		.desktop[category=Estilo] {border-color: #808;}
+		.desktop[category=Hogar-y-Textil] {border-color: #00F;}
+		.desktop[category=Infantiles] {border-color: #C40;}
+		.desktop[category=Provincias] {border-color: #46C;}
+		.desktop[category=Sabores] {border-color: #888;}
+		.desktop[category=Sponsors] {border-color: #C00;}
 		
 		.desktop[category=Arte][reserved] {background-color: #00880050;}
 		.desktop[category=Estilo][reserved] {background-color: #88008850;}
@@ -52,8 +59,6 @@
 		.desktop[category=Sabores][reserved] {background-color: #88888850;}
 		.desktop[category=Sponsors][reserved] {background-color: #CC000050;}
 
-		.desktop .bite {position: absolute; background-color: white; border: 0px solid transparent;}
-		
 		.machine {
 			position: absolute; 
 			left: 50%; top: 50%; 
@@ -63,25 +68,7 @@
 			z-index: 1; 
 		}
 		.machine[vertical] {writing-mode: vertical-rl; width: auto; height: 90%;}
-
-		#imago {
-			position: absolute;
-			top: 20px; right: 20px;
-			padding: 20px;
-			background-color: rgba(255, 255, 255, 0.8);
-		}
-		#imago img {width: 200px;}
 		
-		#stats {
-			position: absolute;
-			bottom: 20px; right: 20px;
-			padding: 20px;
-			background-color: rgba(0, 0, 0, 0.7);
-			color: white;
-		}
-		#stats td {padding: 0 1em;}
-		#stats td:last-child {text-align: right; font-weight: bold;}
-
 		#commands {
 			position: absolute; top: 40px; left: 40px; width: 240px; height: 50px; background-color: #CCC; box-shadow: 0px 5px 20px 2px #000; border-radius: 5px;
 			padding-left: 20px;
@@ -127,14 +114,14 @@
 				const k = 0.155172413793103;
 				return Math.round(k*length);
 			};
-			const endpoint = 'https://prod-174.westus.logic.azure.com/workflows/10a7c13b8d0d45cd947b3df47d0f2b04/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=9K7vR10ujdxThUfWJw7VW2zd2jGpPjO5Zul5jHov03Y';
+			const endpoint = 'https://default20222e196c354bdb83cc440b0f8fcd.6a.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/29/workflows/10a7c13b8d0d45cd947b3df47d0f2b04/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=zFR4Trmehg1npWygs270svX_AFDVInZsG2SziSRStSY';
 			const stands = (new dolly.Module('', endpoint))
 				//.parser(response => response.data.rows.filter(loc => loc.x !== null).map(loc => {loc.users = loc.users.join('<br>'); return loc;}))
 				.view('map', (new dolly.View('#map-view', 'desktop'))
 					.on('bind', (field, data, record) => {
 						switch (field) {
 						case 'style':
-							let s;
+							var s;
 							s = 'left: ' + scale(645 + record.X) + 'px'
 								+ '; top: ' + scale(445 + record.Y) + 'px'
 								+ '; width:' + scale(record.Ancho) + 'px'
@@ -142,7 +129,6 @@
 								+ '; transform: rotate(-' + record.Rotacion + 'deg) '
 								+ '; transform-origin: 100%'
 								+ '; font-size: ' + (x => (x < 10 ? 10 : (x > 24 ? 24 : x)))(scale(Math.min(record.Alto, record.Ancho))/3) + 'px';
-							/*
 							switch (record.Forma) {
 							case 1:
 								s += '; border-top-right-radius: ' + scale(record.Parametro) + 'px'; break;
@@ -152,56 +138,14 @@
 								s += '; border-bottom-left-radius: ' + scale(record.Parametro) + 'px'; break;
 							case 4:
 								s += '; border-bottom-right-radius: ' + scale(record.Parametro) + 'px'; break;
-							}*/
+							}
 							return s;
 						case 'info':
 							return (record.ClienteMarca || '(no reservado)') + '\n' + record.Superficie + ' m²'
 						case 'vertical':
-							return record.Alto >= record.Ancho && scale(record.Ancho) < 60;
+							return record.Alto >= record.Ancho;
 						case 'category':
 							return record.Categoria.replaceAll(' ', '-');
-						case 'bitestyle':
-							let sizeX = Math.sqrt(2)*record.ParametroX;
-							let sizeY = Math.sqrt(2)*record.ParametroY;
-							let b = ' width:' + scale(sizeX) + 'px;'
-									+ ' height: ' + scale(sizeY) + 'px;';
-							switch (record.Forma) {
-							case 1:
-								b += 'left: calc(100% - ' + scale(sizeX/2) + 'px);'
-									+ ' top: -' + scale(sizeY/2) + 'px;'
-									+ ' transform: rotate(45deg);'
-									+ ' border-bottom-width: 1px;';
-								break;
-							case 2:
-								b += 'left: -' + scale(sizeX/2) + 'px;'
-									+ ' top: -' + scale(sizeY/2) + 'px;'
-									+ ' transform: rotate(-45deg);'
-									+ ' border-bottom-width: 1px;';
-								break;
-							case 3:
-								b += 'left: -' + scale(sizeX/2) + 'px;'
-									+ ' top: calc(100% - ' + scale(sizeY/2) + 'px);'
-									+ ' transform: rotate(45deg);'
-									+ ' border-top-width: 1px;';
-								break;
-							case 4:
-								b += 'left: calc(100% - ' + scale(sizeX/2) + 'px);'
-									+ ' top: calc(100% - ' + scale(sizeY/2) + 'px);'
-									+ ' transform: rotate(-45deg);'
-									+ ' border-top-width: 1px;';
-								break;
-							case 12:
-								b = 'width:' + (2 + scale(record.ParametroX)) + 'px;'
-									+ ' height: ' + (2 + scale(record.ParametroY)) + 'px;'
-									+ ' left: -2px;'
-									+ ' top: -2px;'
-									+ ' border-right-width: 1px;'
-									+ ' border-bottom-width: 1px;';
-								break;
-							default:
-								b = 'display: none';
-							}
-							return b;
 						default:
 							return data;
 						}
@@ -216,27 +160,9 @@
 						}
 					})
 				)
-				.on('beforeFetch', (me) => {
-					me.view('map').clear();
-					$('#curtain').fadeIn(500);
-				})
-				.on('endFetch', (me) => {
-					const price = 300000;
-					const stands = me.get(); console.log(stands)
-					const N = stands.length;
-					const n = stands.filter(st => st.ClienteMarca).length;
-					const S = stands.reduce((running, st) => running + st.Superficie, 0);
-					const s = stands.filter(st => st.ClienteMarca).reduce((running, st) => running + st.Superficie, 0);
-					$('#stands').html(N);
-					$('#booking').html(n + ' (' + Math.round(100*n/N) + '%)');
-					$('#area').html(s + ' m<sup>2</sup> (' + Math.round(100*s/S) + '%)');
-					$('#sale').html(new Intl.NumberFormat("es-AR", {style: "currency", currency: "ARS"}).format(Math.round(1.21*price*s)));
+				.on('endFetch', () => {
 					$('#curtain').fadeOut(500);
 				})
-				.on('interval', (me, count) => {
-					me.fetch({verb: 'status'});
-				})
-			.interval(30*60*1000)
 			.fetch();
 		});		
 	</script>
@@ -246,7 +172,6 @@
 		<div id="map-view">
 			<div dy-template="desktop" dy-clone="true" class="desktop" dy-bind="style:[[style]];reserved:?[[ClienteCUIT]];category:[[category]]">
 				<span class="machine" dy-bind="html:[[Codigo]];vertical:?[[vertical]];title:[[info]]"></span>
-				<div class="bite" dy-bind="style:[[bitestyle]];category:[[category]]"></div>
 			</div>
 		</div>
 	</div>
@@ -256,27 +181,8 @@
 		<div class="button" dy-events="click:scale" scale="75"><span>75%</span></div>
 		<div class="button" dy-events="click:scale" scale="50"><span>50%</span></div>
 	</div>
-	<div id="imago">
-		<img src="pds-imagotipo.png" />
-	</div>
-	<div id="stats">
-		<table>
-			<tr>
-				<td>Stands:</td><td id="stands"></td>
-			</tr>
-			<tr>
-				<td>Reservados:</td><td id="booking"></td>
-			</tr>
-			<tr>
-				<td>Superficie:</td><td id="area"></td>
-			</tr>
-			<tr>
-				<td>Venta:</td><td id="sale"></td>
-			</tr>
-		</table>
-	</div>
 	<div id="curtain">
-		<div class="loader"><img src="pds-isotipo.png" />Cargando stands...</div>
+		<div class="loader"><img src="../images/pds-isotipo.png" />Cargando stands...</div>
 	</div>
 </body>
 </html>
